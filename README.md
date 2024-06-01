@@ -1,6 +1,9 @@
-# Tauri + React + Typescript
+# OBS-MOUSE-OVERLAY
 
-Little bit heavy for the current purposes of the app, but will make it easier to add additional features later
+## Desktop app displaying mouse input in various forms.
+- Hook into this easily with obs, just add window capture and set capture method method to win10
+
+A bit heavy for the current purposes of the app, but will make it easier to add additional features later
 
 ## Recommended IDE Setup
 
