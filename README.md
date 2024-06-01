@@ -1,6 +1,6 @@
 # Tauri + React + Typescript
 
-This template should help get you started developing with Tauri, React and Typescript in Vite.
+Little bit heavy for the current purposes of the app, but will make it easier to add additional features later
 
 ## Recommended IDE Setup
 
