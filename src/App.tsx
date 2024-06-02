@@ -40,23 +40,24 @@ function App() {
 
   function handleSetFps() {
     fps == 120 ? setFps(30) : setFps(120);
-    console.log(fps + ": Framerate Set");
+    if (isVerboseMode) console.log(fps + ": Framerate Set");
   }
   function handleSetTrailLength() {
     trailLength == 100 ? setTrailLength(10) : setTrailLength(100);
-    console.log(trailLength + ": Trail Length Set");
+    if (isVerboseMode) console.log(trailLength + ": Trail Length Set");
   }
   function handleSetTrailFadeSpeed() {
     trailFadeSpeed == 1 ? setTrailFadeSpeed(4) : setTrailFadeSpeed(1);
-    console.log(trailFadeSpeed + ": Trail Fade Speed Set");
+    if (isVerboseMode) console.log(trailFadeSpeed + ": Trail Fade Speed Set");
   }
   function handleSetDisplayMagnitude() {
     setDisplayMagnitude(!displayMagnitude);
-    console.log(displayMagnitude + ": Display Magnitude Set");
+    if (isVerboseMode)
+      console.log(displayMagnitude + ": Display Magnitude Set");
   }
   function handleSetIsVerboseMode() {
     setIsVerboseMode(!isVerboseMode);
-    console.log(isVerboseMode + ": Verbose Mode Set");
+    if (isVerboseMode) console.log(isVerboseMode + ": Verbose Mode Set");
   }
   return (
     <SettingsProvider
