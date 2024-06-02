@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-
 import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
 import reactRecommended from "eslint-plugin-react/configs/recommended.js";
@@ -10,6 +7,12 @@ export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.strictTypeChecked,
   {
+  
+    rules: {
+      ...tseslint.configs.strictTypeChecked.rules,
+      "@typescript-eslint/no-non-null-assertion": "off",
+    },
+
     languageOptions: {
       parserOptions: {
         project: true,
@@ -23,6 +26,10 @@ export default tseslint.config(
       ...reactRecommended.rules,
       "react/react-in-jsx-scope": "off",
     },
+    settings: {
+      ...reactRecommended.settings,
+      react: { version: "detect" },
+    },
   },
   {
     plugins: {
@@ -34,6 +41,6 @@ export default tseslint.config(
     },
   },
   {
-    ignores: ["vite.config.ts", "eslint.config.js"],
+    ignores: ["vite.config.ts", "eslint.config.js", "dist/", "src-tauri/"],
   }
 );
