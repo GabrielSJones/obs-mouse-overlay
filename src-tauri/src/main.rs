@@ -12,7 +12,7 @@ fn greet(name: &str) -> String {
 }
 
 #[tauri::command]
-fn send_mouse_position() -> (f32, f32) {
+fn send_mouse_position() -> (f32, f32, f32) {
     // let mut screenWidth:
     // let monitorInUse = Window::current_monitor();
     // match monitorInUse {
@@ -25,12 +25,12 @@ fn send_mouse_position() -> (f32, f32) {
         Mouse::Position { x, y } => {
             let x_fixed: f32 = (x - (2560 / 2)) as f32;
             let y_fixed: f32 = (y - (1440 / 2)) as f32;
-            let mag = f32::sqrt(x_fixed.powf(2.0)+ y_fixed.powf(2.0));
+            let mag = f32::sqrt(x_fixed.powf(2.0) + y_fixed.powf(2.0));
             let x_new = x_fixed as f32 / mag;
             let y_new = y_fixed as f32 / mag;
-            return (x_new,y_new);
+            return (x_new, y_new, mag);
         }
-        Mouse::Error => (0_f32, 0_f32),
+        Mouse::Error => (0_f32, 0_f32, 0_f32),
     }
 }
 fn main() {
