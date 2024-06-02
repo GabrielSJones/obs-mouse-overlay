@@ -1,6 +1,8 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext } from "react";
 
 type SettingsContextType = {
+  isVerboseMode: boolean;
+  setIsVerboseMode: React.Dispatch<React.SetStateAction<boolean>>;
   fps: number;
   setFps: React.Dispatch<React.SetStateAction<number>>;
   trailLength: number;
@@ -11,6 +13,8 @@ type SettingsContextType = {
   setDisplayMagnitude: React.Dispatch<React.SetStateAction<boolean>>;
 };
 const DEFAULT_SETTINGS: SettingsContextType = {
+  isVerboseMode: false,
+  setIsVerboseMode: () => undefined,
   fps: 60,
   setFps: () => undefined,
   trailLength: 10,

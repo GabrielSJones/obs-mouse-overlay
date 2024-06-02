@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import "./App.css";
 import { useSettingsContext } from "./SettingsContext";
@@ -14,32 +14,19 @@ import { useSettingsContext } from "./SettingsContext";
 //   monitorHeightHalf = monitor.size.height / 2;
 // }
 
-type MouseInputType = [number, number];
+type MouseInputType = [number, number, number];
 
-function Canvas({
-  //resetState,
-  //setResetState,
-  //FRAMERATE,
-  //TRAIL_LENGTH,
-  //TRAIL_FADE_SPEED,
-  BACKGROUND_COLOR,
-}: {
-  resetState: boolean;
-  //setResetState: React.Dispatch<React.SetStateAction<boolean>>;
-  //FRAMERATE: number;
-  //TRAIL_LENGTH: number;
-  //TRAIL_FADE_SPEED: number;
-  BACKGROUND_COLOR: string;
-}) {
-  const { fps, trailLength, trailFadeSpeed } = useSettingsContext();
+function Canvas() {
+  const { fps, trailLength, trailFadeSpeed, isVerboseMode } =
+    useSettingsContext();
   const FRAMETIME_IN_MS = 1000 / fps; //why
   const ref = useRef<HTMLCanvasElement>(null);
   const mouseInput = useRef<Array<MouseInputType>>([]);
-
-  console.log(fps);
-  console.log(trailLength);
-  console.log(trailFadeSpeed);
-
+  if (isVerboseMode) {
+    console.log(fps);
+    console.log(trailLength);
+    console.log(trailFadeSpeed);
+  }
   useEffect(() => {
     const timeout = setInterval(() => {
       GetMousePosition().then(() => {
@@ -64,6 +51,7 @@ function Canvas({
     for (var i = len - 1; i >= 0; i--) {
       const x = mouseInput.current[i][0];
       const y = mouseInput.current[i][1];
+      const mag = mouseInput.current[i][2];
 
       //console.log(i + "index");
       const opacity = (100 * ((i + 1) / len)) / trailFadeSpeed;
@@ -92,7 +80,7 @@ function Canvas({
       <canvas
         height={"fit-content"}
         width={"fit-content"}
-        style={{ background: BACKGROUND_COLOR }}
+        style={{ background: "rgb(0,255,0,100)" }}
         ref={ref}
       ></canvas>
     </div>

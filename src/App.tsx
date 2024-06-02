@@ -1,16 +1,10 @@
-import {
-  SetStateAction,
-  createContext,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { invoke } from "@tauri-apps/api/tauri";
+import { useState } from "react";
+
 import "./App.css";
-import SettingsProvider, { useSettingsContext } from "./SettingsContext";
+import SettingsProvider from "./SettingsContext";
 import Canvas from "./Canvas";
 
+const IS_VERBOSE_MODE = false;
 const FRAMERATE = 10; //set to desired framerate - 30 or 60 is typically fine for most cases
 const TRAIL_LENGTH = 100; //leave below 50
 const TRAIL_FADE_SPEED = 4;
@@ -29,45 +23,46 @@ const BACKGROUND_COLOR = "rgb(0,255,0,100)";
 // }
 
 function App() {
+  const [isVerboseMode, setIsVerboseMode] = useState<boolean>(IS_VERBOSE_MODE);
   const [fps, setFps] = useState<number>(FRAMERATE);
   const [trailLength, setTrailLength] = useState<number>(TRAIL_LENGTH);
   const [trailFadeSpeed, setTrailFadeSpeed] =
     useState<number>(TRAIL_FADE_SPEED);
   const [displayMagnitude, setDisplayMagnitude] =
     useState<boolean>(DISPLAY_MAGNITUDE);
-  //const [fps, setFps] = useState<number>(FRAMERATE);
 
   const [resetStates, setResetStates] = useState<boolean>(false);
 
-  // const [trailLength, setTrailLength] = useState<number>(100);
-  // const [fps, setFps] = useState<number>(120);
-
   function reset() {
     setResetStates(!resetStates);
-    //clearTimeout(timeout);
     console.log("resetting?");
-    //console.log(fps + ": Framerate");
   }
 
   function handleSetFps() {
     fps == 120 ? setFps(30) : setFps(120);
-    console.log(fps + ": Framerate");
+    console.log(fps + ": Framerate Set");
   }
   function handleSetTrailLength() {
     trailLength == 100 ? setTrailLength(10) : setTrailLength(100);
-    console.log(trailLength + ": Trail Length");
+    console.log(trailLength + ": Trail Length Set");
   }
   function handleSetTrailFadeSpeed() {
     trailFadeSpeed == 1 ? setTrailFadeSpeed(4) : setTrailFadeSpeed(1);
-    console.log(trailFadeSpeed + ": Trail Length");
+    console.log(trailFadeSpeed + ": Trail Fade Speed Set");
   }
   function handleSetDisplayMagnitude() {
     setDisplayMagnitude(!displayMagnitude);
-    console.log(displayMagnitude + ": Display Magnitude");
+    console.log(displayMagnitude + ": Display Magnitude Set");
+  }
+  function handleSetIsVerboseMode() {
+    setIsVerboseMode(!isVerboseMode);
+    console.log(isVerboseMode + ": Verbose Mode Set");
   }
   return (
     <SettingsProvider
       value={{
+        isVerboseMode: isVerboseMode,
+        setIsVerboseMode: setIsVerboseMode,
         fps: fps,
         setFps: setFps,
         trailLength: trailLength,
@@ -85,14 +80,13 @@ function App() {
       <button onClick={handleSetDisplayMagnitude}>
         {displayMagnitude} Display Speed
       </button>
-      {/* <button onClick={handleSetFps}>Set 120 FPS</button> */}
-      <Canvas
-        resetState={resetStates}
-        //setResetState={setResetStates}
-        //TRAIL_LENGTH={TRAIL_LENGTH}
-        //TRAIL_FADE_SPEED={TRAIL_FADE_SPEED}
-        BACKGROUND_COLOR={BACKGROUND_COLOR}
-      />
+      <button
+        style={{ background: isVerboseMode ? "green" : "red" }}
+        onClick={handleSetIsVerboseMode}
+      >
+        Debug {isVerboseMode ? "ON" : "OFF"}
+      </button>
+      <Canvas />
     </SettingsProvider>
   );
 }
