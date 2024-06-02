@@ -1,12 +1,20 @@
-import { useEffect, useRef, useState } from "react";
+import {
+  SetStateAction,
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import "./App.css";
+import SettingsProvider, { useSettingsContext } from "./SettingsContext";
+import Canvas from "./Canvas";
 
-
-const FRAMERATE = 120 ; //set to desired framerate - 30 or 60 is typically fine for most cases
-const FRAMETIME_IN_MS = 1000 / FRAMERATE; //why
-const TRAIL_LENGTH = 10; //leave below 50
-const TRAIL_FADE_SPEED = 2; //leave below
+const FRAMERATE = 10; //set to desired framerate - 30 or 60 is typically fine for most cases
+const TRAIL_LENGTH = 100; //leave below 50
+const TRAIL_FADE_SPEED = 4;
+const DISPLAY_MAGNITUDE = false;
 const BACKGROUND_COLOR = "rgb(0,255,0,100)";
 
 // import { currentMonitor } from "@tauri-apps/api/window";
@@ -20,76 +28,72 @@ const BACKGROUND_COLOR = "rgb(0,255,0,100)";
 //   monitorHeightHalf = monitor.size.height / 2;
 // }
 
-type MouseInputType = [number, number];
-
 function App() {
-  const [resetState, setResetState] = useState<boolean>(false);
-  const ref = useRef<HTMLCanvasElement>(null);
-  const mouseInput = useRef<Array<MouseInputType>>([]);
+  const [fps, setFps] = useState<number>(FRAMERATE);
+  const [trailLength, setTrailLength] = useState<number>(TRAIL_LENGTH);
+  const [trailFadeSpeed, setTrailFadeSpeed] =
+    useState<number>(TRAIL_FADE_SPEED);
+  const [displayMagnitude, setDisplayMagnitude] =
+    useState<boolean>(DISPLAY_MAGNITUDE);
+  //const [fps, setFps] = useState<number>(FRAMERATE);
+
+  const [resetStates, setResetStates] = useState<boolean>(false);
+
+  // const [trailLength, setTrailLength] = useState<number>(100);
+  // const [fps, setFps] = useState<number>(120);
 
   function reset() {
-    setResetState(!resetState);
-  }
-  useEffect(() => {
-    let timeout: number;
-    //console.log("reset state");
-    function createTRimeout() {
-      return setTimeout(() => {
-        GetMousePosition().then(() => {
-          DrawMouseOnCanvas();
-          timeout = createTRimeout();
-        });
-      }, FRAMETIME_IN_MS);
-    }
-    timeout = createTRimeout();
-    () => {
-      clearTimeout(timeout);
-    };
-  }, [ref, resetState]);
-  function DrawMouseOnCanvas() {
-    const pointer = ref.current?.getContext("2d");
-    const len = mouseInput.current.length;
-    if (!pointer || ref.current == null || ref.current == undefined) {
-      return;
-    }
-    pointer.clearRect(0, 0, ref.current.width, ref.current.height);
-    pointer.beginPath();
-    let canvasW = ref.current!.width;
-    let canvasH = ref.current!.height;
-    let scalar = 50;
-    for (var i = len - 1; i >= 0; i--) {
-      const x = mouseInput.current[i][0];
-      const y = mouseInput.current[i][1];
-
-      //console.log(i + "index");
-      const opacity = (100 * ((i + 1) / len)) / TRAIL_FADE_SPEED;
-      //console.log(opacity + "opacity\n");
-      //console.log(len + "len\n");
-      pointer.moveTo(canvasW / 2, canvasH / 2);
-      pointer.lineTo(canvasW / 2 + x * scalar, canvasH / 2 + y * scalar);
-      pointer.strokeStyle = "rgb(255,0,255," + `${opacity})`;
-      //console.log(pointer.strokeStyle)
-      pointer.stroke();
-    }
+    setResetStates(!resetStates);
+    //clearTimeout(timeout);
+    console.log("resetting?");
+    //console.log(fps + ": Framerate");
   }
 
-  async function GetMousePosition() {
-    const mousePos = await invoke<MouseInputType>("send_mouse_position");
-    mouseInput.current.push(mousePos);
-    //console.log(mousePos);
-    if (mouseInput.current.length > TRAIL_LENGTH) mouseInput.current.shift();
+  function handleSetFps() {
+    fps == 120 ? setFps(30) : setFps(120);
+    console.log(fps + ": Framerate");
   }
-
+  function handleSetTrailLength() {
+    trailLength == 100 ? setTrailLength(10) : setTrailLength(100);
+    console.log(trailLength + ": Trail Length");
+  }
+  function handleSetTrailFadeSpeed() {
+    trailFadeSpeed == 1 ? setTrailFadeSpeed(4) : setTrailFadeSpeed(1);
+    console.log(trailFadeSpeed + ": Trail Length");
+  }
+  function handleSetDisplayMagnitude() {
+    setDisplayMagnitude(!displayMagnitude);
+    console.log(displayMagnitude + ": Display Magnitude");
+  }
   return (
-    <div className="askdjfghasdf">
-      <canvas
-        height={"fit-content"}
-        width={"fit-content"}
-        style={{ background: BACKGROUND_COLOR }}
-        ref={ref}
-      ></canvas>
+    <SettingsProvider
+      value={{
+        fps: fps,
+        setFps: setFps,
+        trailLength: trailLength,
+        setTrailLength: setTrailLength,
+        trailFadeSpeed: trailFadeSpeed,
+        setTrailFadeSpeed: setTrailFadeSpeed,
+        displayMagnitude: displayMagnitude,
+        setDisplayMagnitude: setDisplayMagnitude,
+      }}
+    >
       <button onClick={reset}>Refresh</button>
-    </div>
+      <button onClick={handleSetFps}>{fps} FPS</button>
+      <button onClick={handleSetTrailLength}>{trailLength} Length</button>
+      <button onClick={handleSetTrailFadeSpeed}>{trailFadeSpeed} Fade</button>
+      <button onClick={handleSetDisplayMagnitude}>
+        {displayMagnitude} Display Speed
+      </button>
+      {/* <button onClick={handleSetFps}>Set 120 FPS</button> */}
+      <Canvas
+        resetState={resetStates}
+        //setResetState={setResetStates}
+        //TRAIL_LENGTH={TRAIL_LENGTH}
+        //TRAIL_FADE_SPEED={TRAIL_FADE_SPEED}
+        BACKGROUND_COLOR={BACKGROUND_COLOR}
+      />
+    </SettingsProvider>
   );
 }
 
