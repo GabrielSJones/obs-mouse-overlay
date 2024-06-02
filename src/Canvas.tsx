@@ -22,6 +22,7 @@ function Canvas() {
   const FRAMETIME_IN_MS = 1000 / fps; //why
   const ref = useRef<HTMLCanvasElement>(null);
   const mouseInput = useRef<Array<MouseInputType>>([]);
+  const dotProductArray: Array<number> = [];
   if (isVerboseMode) {
     console.log(fps);
     console.log(trailLength);
@@ -48,20 +49,39 @@ function Canvas() {
     let canvasW = ref.current!.width;
     let canvasH = ref.current!.height;
     let scalar = 50;
-    for (var i = len - 1; i >= 0; i--) {
-      const x = mouseInput.current[i][0];
-      const y = mouseInput.current[i][1];
-      const mag = mouseInput.current[i][2];
 
+    let x = 0,
+      xOld,
+      y = 0,
+      yOld,
+      mag = 0,
+      magOld: number;
+    let dotProduct: number;
+    for (var i = len - 1; i > 0; i--) {
+      //purposefully not accessing "last" index
+      xOld = mouseInput.current[i][0];
+      yOld = mouseInput.current[i][1];
+      magOld = mouseInput.current[i][2];
+      if (i == len - 1) {
+        x = mouseInput.current[i - 1][0];
+        y = mouseInput.current[i - 1][1];
+        mag = mouseInput.current[i - 1][2];
+      }
+      dotProduct = x * xOld + y * yOld;
+      dotProductArray!.push(dotProduct);
       //console.log(i + "index");
       const opacity = (100 * ((i + 1) / len)) / trailFadeSpeed;
       //console.log(opacity + "opacity\n");
       //console.log(len + "len\n");
       pointer.moveTo(canvasW / 2, canvasH / 2);
-      pointer.lineTo(canvasW / 2 + x * scalar, canvasH / 2 + y * scalar);
+      pointer.lineTo(canvasW / 2 + x * mag, canvasH / 2 + y * mag);
       pointer.strokeStyle = "rgb(255,0,255," + `${opacity})`;
       //console.log(pointer.strokeStyle)
       pointer.stroke();
+
+      x = xOld;
+      y = yOld;
+      mag = magOld;
     }
   }
 
@@ -71,19 +91,20 @@ function Canvas() {
     //console.log(mousePos);
     while (mouseInput.current.length > trailLength) {
       console.log(`SHIFTING: ${trailLength - mouseInput.current.length}`);
+
       mouseInput.current.shift();
+      dotProductArray.shift();
     }
   }
 
   return (
-    <div className="askdjfghasdf">
-      <canvas
-        height={"fit-content"}
-        width={"fit-content"}
-        style={{ background: "rgb(0,255,0,100)" }}
-        ref={ref}
-      ></canvas>
-    </div>
+    <canvas className="canvas"
+      height={1000}
+      width={1000}
+      style={{ background: "rgb(0,255,0,100)", height:"100%", width:"100%",
+       }}
+      ref={ref}
+    ></canvas>
   );
 }
 

@@ -26,9 +26,9 @@ fn send_mouse_position() -> (f32, f32, f32) {
             let x_fixed: f32 = (x - (2560 / 2)) as f32;
             let y_fixed: f32 = (y - (1440 / 2)) as f32;
             let mag = f32::sqrt(x_fixed.powf(2.0) + y_fixed.powf(2.0));
-            let x_new = x_fixed as f32 / mag;
-            let y_new = y_fixed as f32 / mag;
-            return (x_new, y_new, mag);
+            //let x_new = x_fixed as f32 / mag;
+            //let y_new = y_fixed as f32 / mag;
+            return (x_fixed, y_fixed, mag);
         }
         Mouse::Error => (0_f32, 0_f32, 0_f32),
     }

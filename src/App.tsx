@@ -7,7 +7,7 @@ import Canvas from "./Canvas";
 const IS_VERBOSE_MODE = false;
 const FRAMERATE = 10; //set to desired framerate - 30 or 60 is typically fine for most cases
 const TRAIL_LENGTH = 100; //leave below 50
-const TRAIL_FADE_SPEED = 4;
+const TRAIL_FADE_SPEED = 1;
 const DISPLAY_MAGNITUDE = false;
 const BACKGROUND_COLOR = "rgb(0,255,0,100)";
 
@@ -87,7 +87,9 @@ function App() {
       >
         Debug {isVerboseMode ? "ON" : "OFF"}
       </button>
-      <Canvas />
+      
+        <Canvas />
+    
     </SettingsProvider>
   );
 }
