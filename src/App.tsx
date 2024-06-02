@@ -9,7 +9,7 @@ const FRAMERATE = 10; //set to desired framerate - 30 or 60 is typically fine fo
 const TRAIL_LENGTH = 100; //leave below 50
 const TRAIL_FADE_SPEED = 1;
 const DISPLAY_MAGNITUDE = false;
-const BACKGROUND_COLOR = "rgb(0,255,0,100)";
+//const BACKGROUND_COLOR = "rgb(0,255,0,100)";
 
 // import { currentMonitor } from "@tauri-apps/api/window";
 // const monitor = await currentMonitor();
@@ -40,24 +40,24 @@ function App() {
 
   function handleSetFps() {
     fps == 120 ? setFps(30) : setFps(120);
-    if (isVerboseMode) console.log(fps + ": Framerate Set");
+    if (isVerboseMode) console.log(fps.toString() + ": Framerate Set");
   }
   function handleSetTrailLength() {
     trailLength == 100 ? setTrailLength(10) : setTrailLength(100);
-    if (isVerboseMode) console.log(trailLength + ": Trail Length Set");
+    if (isVerboseMode) console.log(trailLength.toString() + ": Trail Length Set");
   }
   function handleSetTrailFadeSpeed() {
     trailFadeSpeed == 1 ? setTrailFadeSpeed(4) : setTrailFadeSpeed(1);
-    if (isVerboseMode) console.log(trailFadeSpeed + ": Trail Fade Speed Set");
+    if (isVerboseMode) console.log(trailFadeSpeed.toString()  + ": Trail Fade Speed Set");
   }
   function handleSetDisplayMagnitude() {
     setDisplayMagnitude(!displayMagnitude);
     if (isVerboseMode)
-      console.log(displayMagnitude + ": Display Magnitude Set");
+      console.log(displayMagnitude.toString()  + ": Display Magnitude Set");
   }
   function handleSetIsVerboseMode() {
     setIsVerboseMode(!isVerboseMode);
-    if (isVerboseMode) console.log(isVerboseMode + ": Verbose Mode Set");
+    if (isVerboseMode) console.log(isVerboseMode.toString()  + ": Verbose Mode Set");
   }
   return (
     <SettingsProvider
